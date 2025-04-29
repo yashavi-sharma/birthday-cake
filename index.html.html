@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Birthday!</title>
+  <style>
+    body {
+      background: #fffff0;
+      text-align: center;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      padding-top: 20px;
+    }
+    h1 {
+      color: #ff6600;
+      font-size: 3em;
+    }
+    #cake {
+      position: relative;
+      width: 300px;
+      margin: 20px auto;
+    }
+    #cake img {
+      width: 100%;
+      border-radius: 10px;
+    }
+    .candle {
+      position: absolute;
+      width: 20px;
+      height: 60px;
+      background: pink;
+      border-radius: 3px;
+      top: -5px;
+    }
+    .flame {
+      width: 20px;
+      height: 10px;
+      background: yellow;
+      border-radius: 50%;
+      margin-top: -20px;
+      animation: flicker 0.2s infinite alternate;
+    }
+    .candle1 { left: 90px; }
+    .candle2 { left: 140px; }
+    .candle3 { left: 195px; }
+
+    @keyframes flicker {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(1.2); opacity: 0.8; }
+    }
+
+    #message {
+      margin-top: 30px;
+      font-size: 1.5em;
+      color: #ff1493;
+      display: none;
+    }
+
+    #blowButton {
+      margin-top: 30px;
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: #ff66b2;
+      border: none;
+      border-radius: 25px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    #blowButton:hover {
+      background-color: #ff3385;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Happy Birthday Mera Baccha!🥳</h1>
+
+  <div id="cake">
+    <img src="bday-cake.jpeg" alt="Birthday Cake">
+    
+	
+	<div class="candle candle1"><div class="flame"></div></div>
+    <div class="candle candle2"><div class="flame"></div></div>
+	<div class="candle candle3"><div class="flame"></div></div>
+    
+  </div>
+
+  <button id="blowButton">Jaldi candles ko bujhao Babbay(phuu)!😮‍💨</button>
+
+  <div id="message">
+    Ji real mai cake nahi depayi isliye meri taraf se chota sa cake ji(Aji I Love You)👉👈😊
+  </div>
+
+  <script>
+    const blowButton = document.getElementById('blowButton');
+    const flames = document.querySelectorAll('.flame');
+    const message = document.getElementById('message');
+
+    blowButton.addEventListener('click', () => {
+      flames.forEach(flame => {
+        flame.style.display = 'none';
+      });
+      message.style.display = 'block';
+    });
+
+    // Bonus: Mic blow detection (advanced browser support)
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(stream => {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const microphone = audioContext.createMediaStreamSource(stream);
+        const analyser = audioContext.createAnalyser();
+        microphone.connect(analyser);
+        analyser.fftSize = 256;
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+        function detectBlow() {
+          analyser.getByteFrequencyData(dataArray);
+          let sum = dataArray.reduce((a, b) => a + b, 0);
+          if (sum > 5000) { // Adjust sensitivity
+            flames.forEach(flame => flame.style.display = 'none');
+            message.style.display = 'block';
+          }
+          requestAnimationFrame(detectBlow);
+        }
+        detectBlow();
+      })
+      .catch(error => {
+        console.log('Microphone access denied or not available.');
+      });
+  </script>
+
+</body>
+</html>
